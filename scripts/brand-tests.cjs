@@ -1,6 +1,6 @@
 'use strict';
 
-// Node/VM unit tests with small API doubles; no browser or map provider is started.
+// Node/VM unit tests with small API doubles; no browser or external provider is started.
 const assert = require('node:assert/strict');
 const { Script } = require('node:vm');
 
@@ -24,7 +24,7 @@ module.exports = function checkBrand(sources) {
   }
   assert.match(raja, /<button\b[^>]*type="submit"[^>]*>Bandingkan harga →<\/button>/);
   assert.match(raja, /href="surat\.html#pelanggan">Daftar pelanggan →<\/a>/);
-  assert.doesNotMatch(raja, /href="\.\.\/(?:lintas-samudra\/index\.html|index\.html)"/, 'Raja Kirim tidak boleh menautkan keluar ke situs lain');
+  assert.doesNotMatch(raja, /href="\.\.\/(?!src\/styles\/)/, 'Raja Kirim tidak boleh menautkan keluar ke situs lain');
   for (const id of ['origin', 'destination']) {
     assert.match(raja, new RegExp(`<label\\b[^>]*id="${id}-label"[^>]*for="${id}"`), `${id}: label dinamis harus terhubung ke select`);
     const select = raja.match(new RegExp(`<select\\b[^>]*id="${id}"[^>]*>`))?.[0];
@@ -112,7 +112,7 @@ module.exports = function checkBrand(sources) {
   console.log(`OK Desain C: urutan/navigasi, CSS terisolasi, breakpoint 1280/390, fokus/target sentuh/reduced motion, kontras hero minimal ${Math.min(...contrasts).toFixed(2)}:1 (bukan uji render browser).`);
 
   // Keep generated and static controls on the same shared primitives.
-  for (const file of ['index.html', 'lintas-samudra/index.html', 'raja-kirim/index.html', 'raja-kirim/kalkulator.html', 'raja-kirim/surat.html', 'lintas-samudra/app.js', 'raja-kirim/surat.js']) {
+  for (const file of ['index.html', 'raja-kirim/index.html', 'raja-kirim/kalkulator.html', 'raja-kirim/surat.html', 'raja-kirim/surat.js']) {
     const source = sources.get(file);
     const classes = [...source.matchAll(/(?:class="|className = ')([^"'\n]+)["']/g)].map(match => match[1].split(/\s+/));
     for (const names of classes) {
@@ -139,48 +139,6 @@ module.exports = function checkBrand(sources) {
     }
   });
 
-  const markers = [];
-  const layers = [];
-  const route = { data: null, setData(data) { this.data = data; } };
-  let routeExists = false;
-  let removed = 0;
-  let fits = 0;
-  const map = {
-    getSource() { return routeExists ? route : null; },
-    addSource(name, source) { assert.equal(name, 'route'); route.data = source.data; routeExists = true; },
-    addLayer(layer) { layers.push(layer); },
-    fitBounds() { fits += 1; }
-  };
-  class Popup {
-    setText(text) { assert(text.includes('(simulasi)')); return this; }
-  }
-  class Marker {
-    constructor(options) { this.colour = options.color; markers.push(this); }
-    setLngLat(coords) { this.coords = coords; return this; }
-    setPopup() { return this; }
-    addTo(value) { assert.equal(value, map); return this; }
-    remove() { removed += 1; }
-  }
-  class LngLatBounds {
-    extend() { return this; }
-  }
-  const shipment = { events: [
-    { coords: [170, 10], title: 'Dikirim', place: 'A', time: 'Pagi' },
-    { coords: [-170, 20], title: 'Rencana tiba', place: 'B', time: 'Sore', planned: true }
-  ] };
-  const mapSandbox = {
-    mapReady: true, map, markers: [], shipment, getComputedStyle,
-    document: { documentElement: {} }, maplibregl: { Popup, Marker, LngLatBounds }
-  };
-  new Script(`${declaration(sources.get('lintas-samudra/app.js'), 'updateMap')}\nupdateMap(shipment); updateMap(shipment);`).runInNewContext(mapSandbox, { timeout: 1000 });
-  assert.equal(markers[0].colour, tokens.get('brand-primary'));
-  assert.equal(markers[1].colour, tokens.get('brand-muted-foreground'));
-  assert.equal(layers.length, 1, 'Reuse the existing route layer');
-  assert.equal(layers[0].paint['line-color'], tokens.get('brand-primary'));
-  assert.equal(route.data.geometry.coordinates[1][0], 190, 'Keep antimeridian wrapping');
-  assert.equal(shipment.events[1].coords[0], -170, 'Do not mutate sample coordinates');
-  assert.equal(removed, 2);
-  assert.equal(fits, 2);
 
   const makeNode = tag => ({ tag, children: [], append(...nodes) { this.children.push(...nodes); } });
   const statuses = [];
@@ -315,5 +273,5 @@ module.exports = function checkBrand(sources) {
   assert.match(editorCSS, /\.toolbar-button svg \{[^}]*width: 20px;[^}]*height: 20px;/);
   assert.match(editorCSS, /\.toolbar \.toolbar-button:focus-visible \{ outline-offset: -3px; \}/);
   console.log('OK toolbar: 2 editors, 3 groups, 10 labelled vector buttons, selection preservation, commands and input events; fixed icon/touch-target CSS (Node/VM, no browser).');
-  console.log('OK Bright Cargo: token-only public CSS/JS, shared actions, comparison controls, resolved map markers/route, standalone print tokens, PNG colours/fonts and export errors (Node/VM, no browser).');
+  console.log('OK Bright Cargo: token-only public CSS/JS, shared actions, comparison controls, standalone print tokens, PNG colours/fonts and export errors (Node/VM, no browser).');
 };

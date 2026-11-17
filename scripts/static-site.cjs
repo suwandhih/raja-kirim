@@ -2,7 +2,7 @@
 
 // Build/check tooling only. The application remains plain browser JavaScript.
 const assert = require('node:assert/strict');
-const { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync } = require('node:fs');
+const { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmdirSync, unlinkSync } = require('node:fs');
 const path = require('node:path');
 const { Script } = require('node:vm');
 const checkCalculator = require('./kalkulator-tests.cjs');
@@ -16,10 +16,7 @@ const files = [
   'index.html',
   'src/styles/design-tokens.css',
   'src/styles/brand.css',
-  'lintas-samudra/index.html',
-  'lintas-samudra/styles.css',
-  'lintas-samudra/app.js',
-  'lintas-samudra/data.json',
+  'raja-kirim/favicon.svg',
   'raja-kirim/index.html',
   'raja-kirim/harga.css',
   'raja-kirim/harga.js',
@@ -45,7 +42,7 @@ function localTarget(file, reference) {
 function check() {
   const serverConfig = JSON.parse(readFileSync(path.join(root, 'serve.json'), 'utf8'));
   assert.equal(serverConfig.directoryListing, false, 'Daftar direktori harus dinonaktifkan');
-  assert.deepEqual(serverConfig.cleanUrls, ['/', '/raja-kirim', '/lintas-samudra'], 'Resolusi indeks hanya untuk direktori situs; pertahankan URL .html');
+  assert.deepEqual(serverConfig.cleanUrls, ['/', '/raja-kirim'], 'Resolusi indeks hanya untuk direktori situs; pertahankan URL .html');
   assert.equal(serverConfig.trailingSlash, true, 'URL direktori harus memakai garis miring agar aset relatif benar');
   const sources = new Map(files.map((file) => [file, readFileSync(path.join(root, file), 'utf8')]));
   let references = 0;
@@ -91,14 +88,12 @@ function check() {
   assert(brand.includes(':checked + span') && brand.includes(':focus-visible + span'), 'Tile radio harus memiliki status pilihan dan fokus keyboard');
   assert(brand.includes('prefers-reduced-motion: reduce'), 'Transisi brand harus menghormati reduced motion');
   const home = sources.get('index.html');
-  const lintas = sources.get('lintas-samudra/index.html');
   const raja = sources.get('raja-kirim/index.html');
   assert.match(home, /<meta http-equiv="refresh" content="0; url=raja-kirim\/">/, 'Halaman utama harus langsung mengarah ke Raja Kirim');
   assert.match(home, /href="raja-kirim\/index\.html"/, 'Tautan cadangan Raja Kirim tidak tersedia');
   assert.doesNotMatch(home, /Pilih perjalanan Anda|DUA HALAMAN EKSPEDISI|Pilihan halaman/, 'Halaman utama tidak boleh lagi menjadi menu pilihan situs');
-  assert.match(lintas, /href="\.\.\/raja-kirim\/index\.html"/, 'Navigasi ke Raja Kirim tidak tersedia');
   for (const file of ['raja-kirim/index.html', 'raja-kirim/kalkulator.html', 'raja-kirim/surat.html']) {
-    assert.doesNotMatch(sources.get(file), /href="\.\.\/(?:lintas-samudra\/index\.html|index\.html)"/, `${file}: navigasi Raja Kirim harus berdiri sendiri`);
+    assert.doesNotMatch(sources.get(file), /href="\.\.\/(?!src\/styles\/)/, `${file}: navigasi Raja Kirim harus berdiri sendiri`);
     assert.match(sources.get(file), /href="surat\.html#pelanggan">Daftar pelanggan<\/a>/, `${file}: daftar pelanggan harus mudah diakses`);
   }
   const comparisonSections = ['<header', 'Mode demo.', 'comparison-hero', 'comparison-planner', 'class="results"', 'class="next bc-card"', '<footer'];
@@ -128,34 +123,6 @@ function check() {
   for (const file of ['raja-kirim/harga.css', 'raja-kirim/harga.js']) {
     assert(!/#[\da-f]{3,8}\b|\brgba?\s*\(/i.test(sources.get(file)), `${file}: warna harus berasal dari token`);
   }
-  assert.doesNotMatch(lintas, />Pilihan halaman</, 'Navigasi Lintas Samudra tidak boleh menuju menu pilihan yang sudah dihapus');
-  const data = JSON.parse(sources.get('lintas-samudra/data.json'));
-  assert(Array.isArray(data.shipments) && data.shipments.length > 0, 'Data pengiriman contoh tidak tersedia');
-  const shipmentIds = new Set();
-  for (const shipment of data.shipments) {
-    for (const field of ['id', 'referenceType', 'reference', 'mode', 'carrier', 'origin', 'destination', 'status', 'lastUpdate', 'eta', 'coordinates', 'sender', 'receiver', 'bookingStatus', 'customsExport', 'customsImport', 'tax', 'lastMile']) {
-      assert.equal(typeof shipment[field], 'string', `Data pengiriman: ${field} tidak valid`);
-    }
-    assert(!shipmentIds.has(shipment.id), 'ID pengiriman duplikat');
-    shipmentIds.add(shipment.id);
-    assert(Array.isArray(shipment.events) && shipment.events.some((event) => !event.planned), 'Checkpoint aktual contoh tidak tersedia');
-    for (const event of shipment.events) {
-      for (const field of ['title', 'place', 'time']) assert.equal(typeof event[field], 'string', `Checkpoint: ${field} tidak valid`);
-      assert(Array.isArray(event.coords) && event.coords.length === 2 && event.coords.every(Number.isFinite), 'Koordinat checkpoint tidak valid');
-      assert(Math.abs(event.coords[0]) <= 180 && Math.abs(event.coords[1]) <= 90, 'Koordinat di luar batas');
-    }
-    assert(Array.isArray(shipment.documents), 'Daftar dokumen tidak valid');
-    for (const document of shipment.documents) {
-      assert.equal(typeof document.name, 'string');
-      assert.equal(typeof document.status, 'string');
-    }
-    for (const field of ['base', 'local']) assert(Number.isFinite(shipment.invoice[field]) && shipment.invoice[field] >= 0, 'Biaya contoh tidak valid');
-    assert.equal(typeof shipment.invoice.status, 'string');
-    if (shipment.pod !== null) {
-      for (const field of ['recipient', 'time', 'proof']) assert.equal(typeof shipment.pod[field], 'string');
-    }
-  }
-  assert.match(sources.get('lintas-samudra/app.js'), /fetch\('data\.json(?:\?[^']*)?'\)/, 'Lokasi pemuatan data contoh berubah');
   const sandbox = { window: {} };
   new Script(sources.get('raja-kirim/tarif-contoh.js'), { filename: 'tarif-contoh.js' }).runInNewContext(sandbox, { timeout: 1000 });
   const rates = sandbox.window.RajaKirimData;
@@ -194,15 +161,17 @@ function check() {
   checkBrand(sources);
   const pageCount = files.filter((file) => file.endsWith('.html')).length;
   const scriptCount = files.filter((file) => file.endsWith('.js')).length;
-  console.log(`OK: ${pageCount} halaman HTML, ${scriptCount} skrip JavaScript, ${references} referensi lokal, ${data.shipments.length} pengiriman contoh; navigasi situs tersedia.`);
+  console.log(`OK: ${pageCount} halaman HTML, ${scriptCount} skrip JavaScript, ${references} referensi lokal; navigasi situs tersedia.`);
 }
 
 function removeStaleOutput(directory) {
   if (!existsSync(directory)) return;
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     const target = path.join(directory, entry.name);
-    if (entry.isDirectory()) removeStaleOutput(target);
-    else {
+    if (entry.isDirectory()) {
+      removeStaleOutput(target);
+      if (readdirSync(target).length === 0) rmdirSync(target);
+    } else {
       const relative = path.relative(output, target).split(path.sep).join('/');
       if (entry.isSymbolicLink() || !files.includes(relative)) unlinkSync(target);
     }
@@ -248,7 +217,7 @@ async function verifyHttp(address) {
     }
     console.log(`OK HTTP 200: ${file}`);
   }
-  for (const directory of ['raja-kirim', 'lintas-samudra']) {
+  for (const directory of ['raja-kirim']) {
     const response = await fetch(new URL(directory, base), { signal: AbortSignal.timeout(20000) });
     assert.equal(response.status, 200, `${directory}: URL direktori tanpa garis miring harus dapat dibuka`);
     assert(new URL(response.url).pathname.endsWith(`/${directory}/`), `${directory}: URL akhir harus memiliki garis miring`);

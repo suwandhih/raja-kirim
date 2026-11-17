@@ -43,8 +43,6 @@ Raja Kirim juga menyediakan data pelanggan, pencatatan korespondensi simulasi, q
    | **Daftar pelanggan** | Mengelola data kontak pelanggan dan melihat riwayat korespondensi simulasinya. |
    | **Surat & dokumen** | Membuka tab **Korespondensi** dan **Dokumen** untuk menyiapkan pesan simulasi, quotation, atau tanda terima. |
 
-Lintas Samudra adalah situs demo terpisah di `/lintas-samudra/`. Panduan ini hanya membahas Raja Kirim.
-
 ## 3. Alur kerja sehari-hari
 
 Contoh berikut menggambarkan latihan kerja, bukan proses pemesanan nyata.

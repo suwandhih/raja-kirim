@@ -1,11 +1,11 @@
-# Expedisi — Raja Kirim & Lintas Samudra
+# Raja Kirim — Demo Ekspedisi
 
-Frontend statis berbahasa Indonesia untuk demonstrasi. Identitas, tarif, vendor, booking, status, posisi, dokumen, POD, klaim, dan tagihan adalah **simulasi**, bukan layanan atau tracking real-time. Tidak ada backend, transaksi, pembayaran, upload, atau pengiriman klaim. Pilihan tema dapat disimpan di browser; data klaim hanya tampil sementara dan tidak disimpan.
+Frontend statis berbahasa Indonesia untuk demonstrasi Raja Kirim. Identitas, tarif, vendor, pelanggan, dokumen, dan korespondensi adalah **simulasi**. Tidak ada backend, transaksi, pembayaran, pengiriman email/WhatsApp, atau tracking. Data pelanggan dan pengaturan hanya disimpan di browser ini.
 
 ## Demo Raja Kirim
 [Panduan fitur Raja Kirim](panduan-rajakirim.md)
 
-Halaman utama (`/`) langsung mengarah ke [Raja Kirim](raja-kirim/index.html) di `/raja-kirim/`. [Lintas Samudra](lintas-samudra/index.html) tetap tersedia sebagai demo terpisah di `/lintas-samudra/` dan memiliki navigasi kembali ke Raja Kirim. Pengalihan memakai satu sumber halaman Raja Kirim sehingga fitur asli tidak diduplikasi. Raja Kirim memfokuskan perbandingan alternatif harga ekspor/impor serta simulasi surat dan dokumen pelanggan. Pengelolaan pelanggan menyimpan kontak dan riwayat korespondensi simulasi di penyimpanan browser lokal, yang dapat dihapus melalui pengaturan browser. Template dapat diedit dan dipratinjau per pelanggan; perubahan template hanya berlaku selama halaman terbuka. Email dan WhatsApp hanya berupa contoh tampilan: tidak ada koneksi atau pesan yang dikirim. Seluruh data dan tarif adalah fiktif, bukan penawaran aktual. Jangan masukkan data sensitif.
+Halaman utama (`/`) langsung mengarah ke [Raja Kirim](raja-kirim/index.html) di `/raja-kirim/`. Pengalihan memakai satu sumber halaman Raja Kirim sehingga fitur asli tidak diduplikasi. Raja Kirim memfokuskan perbandingan alternatif harga ekspor/impor serta simulasi surat dan dokumen pelanggan. Pengelolaan pelanggan menyimpan kontak dan riwayat korespondensi simulasi di penyimpanan browser lokal, yang dapat dihapus melalui pengaturan browser. Template dapat diedit dan dipratinjau per pelanggan; perubahan template hanya berlaku selama halaman terbuka. Email dan WhatsApp hanya berupa contoh tampilan: tidak ada koneksi atau pesan yang dikirim. Seluruh data dan tarif adalah fiktif, bukan penawaran aktual. Jangan masukkan data sensitif.
 
 ### Kalkulator negara
 
@@ -30,19 +30,19 @@ Payload rusak diabaikan dan dihapus dengan pesan berbahasa Indonesia. Jika penyi
 
 ## Shared Bright Cargo styles
 
-All five pages load the generated [design tokens](src/styles/design-tokens.css), then the editable [brand foundation](src/styles/brand.css), before their own stylesheets. The static build allowlists **19 public files**, including both shared stylesheets under `dist/src/styles/`. Never edit the generated tokens, Tailwind preset or managed brand assets, and do not introduce a framework for this static site.
+All four pages load the generated [design tokens](src/styles/design-tokens.css), then the editable [brand foundation](src/styles/brand.css), before their own stylesheets. The static build allowlists **16 public files**, including both shared stylesheets under `dist/src/styles/`. Never edit the generated tokens, Tailwind preset or managed brand assets, and do not introduce a framework for this static site.
 
 The completed look uses one set of `bc-` primitives for skip links, headers/pill navigation, buttons, cards, badges, alerts, labels/controls and radio tiles, including actions rendered by JavaScript. Page CSS keeps layout and intentional theme/print differences, not duplicate primitives. Colours, fonts and corner radii come from the tokens; tints and shadows use `color-mix()`, with no literal hex/rgb colours in application CSS or JavaScript. Nunito and Montserrat load from Google Fonts with token system fallbacks.
 
-Perbandingan harga follows Design C: a violet-to-tangerine hero, an overlapping planner with native Ekspor/Impor radio tiles, raised comparison cards and a soft tangerine quotation card. The calculator, documents and Lintas Samudra keep their section order, content and behaviour; the root page is only an accessible redirect to Raja Kirim. The layout rules cover 1280px desktop and 390px phone widths; cards/fields stack and the wide calculator table, document tabs and Lintas nav scroll inside their own regions. Lintas dark mode uses token-derived aliases. The existing native booking `<dialog>` remains under the agreed no-framework exception; the design checker’s shadcn recommendation is advisory, not a missing feature.
+Perbandingan harga follows Design C: a violet-to-tangerine hero, an overlapping planner with native Ekspor/Impor radio tiles, raised comparison cards and a soft tangerine quotation card. The calculator and documents keep their section order, content and behaviour; the root page is only an accessible redirect to Raja Kirim. The layout rules cover 1280px desktop and 390px phone widths; cards/fields stack and the wide calculator table and document tabs scroll inside their own regions.
 
-Map markers/routes, editor highlighting and PNG exports resolve token values for native APIs. PDF print windows copy token values and fonts locally, so they do not rely on another stylesheet request; printed headings/highlights remain readable without background printing. Radio tiles retain the native label/radio/span structure and keyboard interaction.
+Editor highlighting and PNG exports resolve token values for native APIs. PDF print windows copy token values and fonts locally, so they do not rely on another stylesheet request; printed headings/highlights remain readable without background printing. Radio tiles retain the native label/radio/span structure and keyboard interaction.
 
-`npm run check` and `npm run build` run the calculator/quotation regressions plus [Bright Cargo unit checks](scripts/brand-tests.cjs) for token-only styling, shared actions, comparison controls, resolved map colours, PDF/PNG styling and export errors. The 19-file public allowlist remains in [the build script](scripts/static-site.cjs); internal docs and test files are never copied into `dist/`. These are source checks and Node/VM tests, not browser rendering tests. Visual appearance, real browser interactions and external map/font availability were not browser-verified while Live Test was off.
+`npm run check` and `npm run build` run the calculator/quotation regressions plus [Bright Cargo unit checks](scripts/brand-tests.cjs) for token-only styling, shared actions, comparison controls, PDF/PNG styling and export errors. The 16-file public allowlist remains in [the build script](scripts/static-site.cjs); internal docs and test files are never copied into `dist/`. These are source checks and Node/VM tests, not browser rendering tests. Visual appearance, real browser interactions and external map/font availability were not browser-verified while Live Test was off.
 
 ## Menjalankan
 
-Install the pinned tooling with `npm ci`, run `npm run build`, then serve only `dist/` with a static HTTP server (for example, `npx serve dist`). Jangan membuka `index.html` langsung melalui `file://`, karena pemuatan `data.json` memerlukan HTTP. Semua path aplikasi bersifat relatif sehingga dapat dilayani dari subpath GitHub Pages tanpa konfigurasi build. Tidak perlu akun atau API key.
+Install the pinned tooling with `npm ci`, run `npm run build`, then serve only `dist/` with a static HTTP server (for example, `npx serve dist`). Buka situs melalui HTTP, bukan langsung melalui `file://`, agar perilakunya sama dengan demo publik. Semua path aplikasi bersifat relatif sehingga dapat dilayani dari subpath GitHub Pages tanpa konfigurasi build. Tidak perlu akun atau API key.
 
 ### Demo publik di GitHub Pages
 
@@ -56,9 +56,9 @@ Pengaturan satu kali oleh pemilik repositori:
 4. Commit dan push perubahan proyek ke branch tersebut. Alur **Publish public demo** berjalan otomatis pada setiap push ke branch ini, bukan setiap branch. Jalankan ulang alur yang gagal setelah pengaturan diperbaiki. Tombol manual **Run workflow** baru tersedia bila berkas workflow juga ada pada default branch; push tidak memerlukan tombol ini.
 5. Di tab **Actions**, tunggu pekerjaan **build** dan **deploy** berhasil, lalu buka alamat dari hasil deployment **github-pages**. Push berhasil saja belum berarti situs terbaru sudah tersedia; perubahan dapat membutuhkan beberapa menit.
 
-Build memakai Node.js `24.19.0` dan `npm ci` dengan lockfile proyek. `npm run build` menjalankan seluruh pemeriksaan serta uji Node/VM sebelum menyalin 19 berkas publik yang diizinkan. Hanya `dist/` yang diterbitkan, bukan dokumen internal, gambar lampiran, konfigurasi, kode uji, atau isi Library. Workflow memakai izin terbatas dan tidak memerlukan secret tambahan.
+Build memakai Node.js `24.19.0` dan `npm ci` dengan lockfile proyek. `npm run build` menjalankan seluruh pemeriksaan serta uji Node/VM sebelum menyalin 16 berkas publik yang diizinkan. Hanya `dist/` yang diterbitkan, bukan dokumen internal, gambar lampiran, konfigurasi, kode uji, atau isi Library. Workflow memakai izin terbatas dan tidak memerlukan secret tambahan.
 
-Penerbitan ini memperbarui satu situs Pages milik repositori: halaman akar `/expedisi/` langsung mengarah ke Raja Kirim di `/expedisi/raja-kirim/`, dan Lintas Samudra tetap tersedia di `/expedisi/lintas-samudra/`. Tautan relatif tetap bekerja di subfolder tersebut. Tidak ada server milik Anda yang perlu dibiarkan menyala.
+Penerbitan ini memperbarui satu situs Pages milik repositori: halaman akar `/expedisi/` langsung mengarah ke Raja Kirim di `/expedisi/raja-kirim/`. Tautan relatif tetap bekerja di subfolder tersebut. Tidak ada server milik Anda yang perlu dibiarkan menyala.
 
 Demo bersifat publik dan tetap simulasi. Data yang dimasukkan klien hanya **disimpan di browser ini**, bukan dibagikan ke staf atau klien lain. Data dari Preview tidak berpindah otomatis karena alamat situs berbeda. Jangan memasukkan data sensitif; email/WhatsApp tetap tidak dikirim sungguhan.
 
@@ -69,13 +69,13 @@ Profil `node-24` digunakan hanya untuk alat pemeriksaan dan server HTTP statis `
 - Periksa sintaks JavaScript, tautan/aset lokal, dan konsistensi data contoh: `node scripts/static-site.cjs check`.
 - Siapkan berkas publik: `node scripts/static-site.cjs build`.
 - Skrip `dev` di `package.json` menjalankan server pada folder `dist/` menggunakan `PORT` yang diberikan platform; `.cdf/runtime.json` memilih profil tooling. Hanya berkas situs yang disajikan; dokumen internal dan konfigurasi proyek tidak ikut disalin.
-- Buka Preview (`/`); halaman langsung mengarah ke Raja Kirim. Alamat Raja Kirim dan Lintas Samudra juga dapat dibuka langsung di `/raja-kirim/` dan `/lintas-samudra/`. Surat dan pelanggan tetap tersedia di `/raja-kirim/surat.html`.
+- Buka Preview (`/`); halaman langsung mengarah ke Raja Kirim. Alamat Raja Kirim juga dapat dibuka langsung di `/raja-kirim/`. Surat dan pelanggan tetap tersedia di `/raja-kirim/surat.html`.
 - Setelah mengubah sumber statis, build ulang lalu restart Preview. Situs ini tidak menggunakan HMR.
-- URL direktori memakai garis miring penutup (`/raja-kirim/`, `/lintas-samudra/`); URL halaman `.html` dipertahankan agar aset relatif tetap benar. Konfigurasi `serve.json` hanya mengaktifkan resolusi indeks bersih untuk direktori situs, bukan semua halaman.
+- URL direktori memakai garis miring penutup (`/raja-kirim/`); URL halaman `.html` dipertahankan agar aset relatif tetap benar. Konfigurasi `serve.json` hanya mengaktifkan resolusi indeks bersih untuk direktori situs, bukan semua halaman.
 - Untuk memeriksa respons halaman/aset relatif, URL direktori, dan penolakan akses berkas internal tanpa browser: `node scripts/static-site.cjs http <alamat-preview>`.
 
-Data contoh pengiriman dan checkpoint tersedia di `lintas-samudra/data.json`; tarif contoh dihitung di `lintas-samudra/app.js`. Jangan masukkan data sensitif: GitHub Pages bersifat publik. Integrasi nyata, akses dokumen, retensi, kepatuhan, dan tanda tangan membutuhkan desain terpisah.
+Tarif contoh Raja Kirim tersedia di `raja-kirim/tarif-contoh.js`. Jangan masukkan data sensitif: GitHub Pages bersifat publik. Integrasi nyata, akses dokumen, retensi, kepatuhan, dan tanda tangan membutuhkan desain terpisah.
 
-## Peta dan jaringan
+## Font dan jaringan
 
-Mengikuti pendekatan contoh Peta Dunia, peta memakai [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) (lisensi BSD-3-Clause) dan gaya [OpenFreeMap](https://openfreemap.org/) dengan data [OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL); atribusi tersedia pada peta. Library dimuat dari unpkg, dan gaya, font peta, serta tile dimuat dari layanan penyedia. Ketersediaan dan ketentuan penyedia perlu ditinjau sebelum produksi. Font antarmuka dari Google Fonts; font sistem digunakan sebagai fallback. Peta memerlukan internet dan tidak tersedia bila sumber eksternal diblokir atau gagal; rincian dan riwayat tetap dapat digunakan. Garis menghubungkan checkpoint contoh, bukan rute aktual.
+Font antarmuka Nunito dan Montserrat dimuat dari Google Fonts, dengan font sistem sebagai fallback. Fitur Raja Kirim tetap dapat digunakan bila font eksternal tidak tersedia. Tidak ada peta, tracking, atau layanan eksternal lain yang diperlukan.
