@@ -93,8 +93,9 @@ function check() {
   const home = sources.get('index.html');
   const lintas = sources.get('lintas-samudra/index.html');
   const raja = sources.get('raja-kirim/index.html');
-  assert.match(home, /href="raja-kirim\/index\.html"/, 'Pilihan halaman Raja Kirim tidak tersedia');
-  assert.match(home, /href="lintas-samudra\/index\.html"/, 'Pilihan halaman Lintas Samudra tidak tersedia');
+  assert.match(home, /<meta http-equiv="refresh" content="0; url=raja-kirim\/">/, 'Halaman utama harus langsung mengarah ke Raja Kirim');
+  assert.match(home, /href="raja-kirim\/index\.html"/, 'Tautan cadangan Raja Kirim tidak tersedia');
+  assert.doesNotMatch(home, /Pilih perjalanan Anda|DUA HALAMAN EKSPEDISI|Pilihan halaman/, 'Halaman utama tidak boleh lagi menjadi menu pilihan situs');
   assert.match(lintas, /href="\.\.\/raja-kirim\/index\.html"/, 'Navigasi ke Raja Kirim tidak tersedia');
   for (const file of ['raja-kirim/index.html', 'raja-kirim/kalkulator.html', 'raja-kirim/surat.html']) {
     assert.doesNotMatch(sources.get(file), /href="\.\.\/(?:lintas-samudra\/index\.html|index\.html)"/, `${file}: navigasi Raja Kirim harus berdiri sendiri`);
@@ -127,7 +128,7 @@ function check() {
   for (const file of ['raja-kirim/harga.css', 'raja-kirim/harga.js']) {
     assert(!/#[\da-f]{3,8}\b|\brgba?\s*\(/i.test(sources.get(file)), `${file}: warna harus berasal dari token`);
   }
-  assert.match(lintas, /href="\.\.\/index\.html"/, 'Lintas Samudra tetap memiliki navigasi ke pilihan halaman');
+  assert.doesNotMatch(lintas, />Pilihan halaman</, 'Navigasi Lintas Samudra tidak boleh menuju menu pilihan yang sudah dihapus');
   const data = JSON.parse(sources.get('lintas-samudra/data.json'));
   assert(Array.isArray(data.shipments) && data.shipments.length > 0, 'Data pengiriman contoh tidak tersedia');
   const shipmentIds = new Set();

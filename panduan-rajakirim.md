@@ -32,8 +32,8 @@ Raja Kirim juga menyediakan data pelanggan, pencatatan korespondensi simulasi, q
 
 ## 2. Cara membuka
 
-1. Buka halaman awal `/` pada alamat situs yang diberikan kepada Anda.
-2. Pilih **Buka Raja Kirim →**. Anda juga bisa membuka alamat `/raja-kirim/` langsung pada situs yang sama.
+1. Buka halaman awal `/` pada alamat situs yang diberikan kepada Anda. Halaman akan langsung membuka **Perbandingan harga** Raja Kirim.
+2. Jika pengalihan otomatis tidak berjalan, pilih **Buka Raja Kirim →**. Anda juga bisa membuka alamat `/raja-kirim/` langsung pada situs yang sama.
 3. Gunakan empat menu di bagian atas:
 
    | Menu | Kegunaan |
@@ -43,7 +43,7 @@ Raja Kirim juga menyediakan data pelanggan, pencatatan korespondensi simulasi, q
    | **Daftar pelanggan** | Mengelola data kontak pelanggan dan melihat riwayat korespondensi simulasinya. |
    | **Surat & dokumen** | Membuka tab **Korespondensi** dan **Dokumen** untuk menyiapkan pesan simulasi, quotation, atau tanda terima. |
 
-Lintas Samudra adalah situs demo terpisah yang juga dapat dibuka dari halaman awal `/`. Panduan ini hanya membahas Raja Kirim.
+Lintas Samudra adalah situs demo terpisah di `/lintas-samudra/`. Panduan ini hanya membahas Raja Kirim.
 
 ## 3. Alur kerja sehari-hari
 
