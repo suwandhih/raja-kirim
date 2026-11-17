@@ -46,19 +46,19 @@ Install the pinned tooling with `npm ci`, run `npm run build`, then serve only `
 
 ### Demo publik di GitHub Pages
 
-[Penerbitan otomatis](.github/workflows/pages.yml) menyiapkan demo yang tetap dapat dibuka klien ketika komputer Anda dan Preview Foundry tidak aktif. Setelah penerbitan berhasil, alamat utama **https://suwandhih.github.io/expedisi/** langsung membuka Raja Kirim. Alamat **https://suwandhih.github.io/expedisi/raja-kirim/** juga tetap tersedia. Keduanya adalah alamat tujuan, bukan bukti bahwa versi terbaru sudah terbit.
+[Penerbitan otomatis](.github/workflows/pages.yml) menyiapkan demo yang tetap dapat dibuka klien ketika komputer Anda dan Preview Foundry tidak aktif. Setelah penerbitan berhasil, alamat utama **https://suwandhih.github.io/raja-kirim/** langsung membuka demo Raja Kirim. Alamat ini adalah tujuan, bukan bukti bahwa versi terbaru sudah terbit.
 
 Pengaturan satu kali oleh pemilik repositori:
 
-1. Pastikan koneksi Foundry menuju `suwandhih/expedisi` sudah dikonfirmasi dan mengizinkan push. Perubahan pada `.github/workflows/` juga memerlukan izin **Workflows: Read and write** jika memakai token GitHub; masukkan token hanya melalui pengaturan koneksi, tidak melalui chat atau berkas proyek.
+1. Pastikan koneksi Foundry menuju `suwandhih/raja-kirim` sudah dikonfirmasi dan mengizinkan push. Perubahan pada `.github/workflows/` juga memerlukan izin **Workflows: Read and write** jika memakai token GitHub; masukkan token hanya melalui pengaturan koneksi, tidak melalui chat atau berkas proyek.
 2. Di GitHub, buka **Settings → Pages → Build and deployment → Source**, lalu pilih **GitHub Actions**. Jangan pilih penerbitan seluruh folder akar repositori.
-3. Bila lingkungan **Settings → Environments → github-pages** membatasi branch penerbitan, pemilik perlu mengizinkan branch tujuan push proyek, yaitu `foundry/d4840e0e-a645-4e49-870d-03a7b10a5003`, sesuai kebijakan repositori. Pertahankan aturan persetujuan yang ada; jangan menonaktifkan proteksi. Jika kebijakan mewajibkan `main`, alur penerbitan perlu diselaraskan melalui proses review/merge yang berlaku sebelum dipakai.
-4. Commit dan push perubahan proyek ke branch tersebut. Alur **Publish public demo** berjalan otomatis pada setiap push ke branch ini, bukan setiap branch. Jalankan ulang alur yang gagal setelah pengaturan diperbaiki. Tombol manual **Run workflow** baru tersedia bila berkas workflow juga ada pada default branch; push tidak memerlukan tombol ini.
+3. Bila lingkungan **Settings → Environments → github-pages** membatasi branch penerbitan, pemilik perlu mengizinkan `main` sesuai kebijakan repositori. Pertahankan aturan persetujuan yang ada; jangan menonaktifkan proteksi.
+4. Commit dan push perubahan proyek ke `main`. Alur **Publish public demo** berjalan otomatis pada setiap push ke branch ini, bukan setiap branch. Jalankan ulang alur yang gagal setelah pengaturan diperbaiki. Tombol manual **Run workflow** juga tersedia karena workflow berada pada default branch; push tidak memerlukan tombol ini.
 5. Di tab **Actions**, tunggu pekerjaan **build** dan **deploy** berhasil, lalu buka alamat dari hasil deployment **github-pages**. Push berhasil saja belum berarti situs terbaru sudah tersedia; perubahan dapat membutuhkan beberapa menit.
 
 Build memakai Node.js `24.19.0` dan `npm ci` dengan lockfile proyek. `npm run build` menjalankan seluruh pemeriksaan serta uji Node/VM sebelum menyalin 16 berkas publik yang diizinkan. Hanya `dist/` yang diterbitkan, bukan dokumen internal, gambar lampiran, konfigurasi, kode uji, atau isi Library. Workflow memakai izin terbatas dan tidak memerlukan secret tambahan.
 
-Penerbitan ini memperbarui satu situs Pages milik repositori: halaman akar `/expedisi/` langsung mengarah ke Raja Kirim di `/expedisi/raja-kirim/`. Tautan relatif tetap bekerja di subfolder tersebut. Tidak ada server milik Anda yang perlu dibiarkan menyala.
+Penerbitan ini memperbarui satu situs Pages milik repositori: halaman akar situs langsung mengarah ke aplikasi Raja Kirim. Tautan relatif tetap bekerja di subfolder Pages. Tidak ada server milik Anda yang perlu dibiarkan menyala.
 
 Demo bersifat publik dan tetap simulasi. Data yang dimasukkan klien hanya **disimpan di browser ini**, bukan dibagikan ke staf atau klien lain. Data dari Preview tidak berpindah otomatis karena alamat situs berbeda. Jangan memasukkan data sensitif; email/WhatsApp tetap tidak dikirim sungguhan.
 

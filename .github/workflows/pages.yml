@@ -3,7 +3,7 @@ name: Publish public demo
 on:
   push:
     branches:
-      - foundry/d4840e0e-a645-4e49-870d-03a7b10a5003
+      - main
   workflow_dispatch:
 
 permissions:
@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/foundry/d4840e0e-a645-4e49-870d-03a7b10a5003'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
