@@ -30,7 +30,7 @@ Payload rusak diabaikan dan dihapus dengan pesan berbahasa Indonesia. Jika penyi
 
 ## Shared Bright Cargo styles
 
-All five pages load the generated [design tokens](src/styles/design-tokens.css), then the editable [brand foundation](src/styles/brand.css), before their own stylesheets. The static build allowlists **18 public files**, including both shared stylesheets under `dist/src/styles/`. Never edit the generated tokens, Tailwind preset or managed brand assets, and do not introduce a framework for this static site.
+All five pages load the generated [design tokens](src/styles/design-tokens.css), then the editable [brand foundation](src/styles/brand.css), before their own stylesheets. The static build allowlists **19 public files**, including both shared stylesheets under `dist/src/styles/`. Never edit the generated tokens, Tailwind preset or managed brand assets, and do not introduce a framework for this static site.
 
 The completed look uses one set of `bc-` primitives for skip links, headers/pill navigation, buttons, cards, badges, alerts, labels/controls and radio tiles, including actions rendered by JavaScript. Page CSS keeps layout and intentional theme/print differences, not duplicate primitives. Colours, fonts and corner radii come from the tokens; tints and shadows use `color-mix()`, with no literal hex/rgb colours in application CSS or JavaScript. Nunito and Montserrat load from Google Fonts with token system fallbacks.
 
@@ -38,11 +38,29 @@ Perbandingan harga follows Design C: a violet-to-tangerine hero, an overlapping 
 
 Map markers/routes, editor highlighting and PNG exports resolve token values for native APIs. PDF print windows copy token values and fonts locally, so they do not rely on another stylesheet request; printed headings/highlights remain readable without background printing. Radio tiles retain the native label/radio/span structure and keyboard interaction.
 
-`npm run check` and `npm run build` run the calculator/quotation regressions plus [Bright Cargo unit checks](scripts/brand-tests.cjs) for token-only styling, shared actions, comparison controls, resolved map colours, PDF/PNG styling and export errors. The 18-file public allowlist remains in [the build script](scripts/static-site.cjs); internal docs and test files are never copied into `dist/`. These are source checks and Node/VM tests, not browser rendering tests. Visual appearance, real browser interactions and external map/font availability were not browser-verified while Live Test was off.
+`npm run check` and `npm run build` run the calculator/quotation regressions plus [Bright Cargo unit checks](scripts/brand-tests.cjs) for token-only styling, shared actions, comparison controls, resolved map colours, PDF/PNG styling and export errors. The 19-file public allowlist remains in [the build script](scripts/static-site.cjs); internal docs and test files are never copied into `dist/`. These are source checks and Node/VM tests, not browser rendering tests. Visual appearance, real browser interactions and external map/font availability were not browser-verified while Live Test was off.
 
 ## Menjalankan
 
 Install the pinned tooling with `npm ci`, run `npm run build`, then serve only `dist/` with a static HTTP server (for example, `npx serve dist`). Jangan membuka `index.html` langsung melalui `file://`, karena pemuatan `data.json` memerlukan HTTP. Semua path aplikasi bersifat relatif sehingga dapat dilayani dari subpath GitHub Pages tanpa konfigurasi build. Tidak perlu akun atau API key.
+
+### Demo publik di GitHub Pages
+
+[Penerbitan otomatis](.github/workflows/pages.yml) menyiapkan demo yang tetap dapat dibuka klien ketika komputer Anda dan Preview Foundry tidak aktif. Setelah penerbitan berhasil, alamat langsung Raja Kirim adalah **https://suwandhih.github.io/expedisi/raja-kirim/**. Ini alamat tujuan, bukan bukti bahwa versi terbaru sudah terbit.
+
+Pengaturan satu kali oleh pemilik repositori:
+
+1. Pastikan koneksi Foundry menuju `suwandhih/expedisi` sudah dikonfirmasi dan mengizinkan push. Perubahan pada `.github/workflows/` juga memerlukan izin **Workflows: Read and write** jika memakai token GitHub; masukkan token hanya melalui pengaturan koneksi, tidak melalui chat atau berkas proyek.
+2. Di GitHub, buka **Settings → Pages → Build and deployment → Source**, lalu pilih **GitHub Actions**. Jangan pilih penerbitan seluruh folder akar repositori.
+3. Bila lingkungan **Settings → Environments → github-pages** membatasi branch penerbitan, pemilik perlu mengizinkan branch tujuan push proyek, yaitu `foundry/d4840e0e-a645-4e49-870d-03a7b10a5003`, sesuai kebijakan repositori. Pertahankan aturan persetujuan yang ada; jangan menonaktifkan proteksi. Jika kebijakan mewajibkan `main`, alur penerbitan perlu diselaraskan melalui proses review/merge yang berlaku sebelum dipakai.
+4. Commit dan push perubahan proyek ke branch tersebut. Alur **Publish public demo** berjalan otomatis pada setiap push ke branch ini, bukan setiap branch. Jalankan ulang alur yang gagal setelah pengaturan diperbaiki. Tombol manual **Run workflow** baru tersedia bila berkas workflow juga ada pada default branch; push tidak memerlukan tombol ini.
+5. Di tab **Actions**, tunggu pekerjaan **build** dan **deploy** berhasil, lalu buka alamat dari hasil deployment **github-pages**. Push berhasil saja belum berarti situs terbaru sudah tersedia; perubahan dapat membutuhkan beberapa menit.
+
+Build memakai Node.js `24.19.0` dan `npm ci` dengan lockfile proyek. `npm run build` menjalankan seluruh pemeriksaan serta uji Node/VM sebelum menyalin 19 berkas publik yang diizinkan. Hanya `dist/` yang diterbitkan, bukan dokumen internal, gambar lampiran, konfigurasi, kode uji, atau isi Library. Workflow memakai izin terbatas dan tidak memerlukan secret tambahan.
+
+Penerbitan ini memperbarui satu situs Pages milik repositori: halaman akar menjadi pilihan situs, Raja Kirim ada di `/expedisi/raja-kirim/`, dan Lintas Samudra tetap tersedia di `/expedisi/lintas-samudra/`. Tautan relatif tetap bekerja di subfolder tersebut. Tidak ada server milik Anda yang perlu dibiarkan menyala.
+
+Demo bersifat publik dan tetap simulasi. Data yang dimasukkan klien hanya **disimpan di browser ini**, bukan dibagikan ke staf atau klien lain. Data dari Preview tidak berpindah otomatis karena alamat situs berbeda. Jangan memasukkan data sensitif; email/WhatsApp tetap tidak dikirim sungguhan.
 
 ### Preview di Software Foundry
 
